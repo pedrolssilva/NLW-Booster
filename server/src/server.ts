@@ -1,5 +1,7 @@
-import express, { request, response } from "express";
+import express from "express";
+import cors from "cors";
 import routes from "./routes";
+import path from "path";
 
 //Rota: Endereço completo da requisição
 //Recurso: Qual entidade estamos acessando do sistema
@@ -20,7 +22,8 @@ import routes from "./routes";
 //Request Body: Parametros para criação e atualização de informações
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(routes);
-
+app.use("/uploads", express.static(path.resolve(__dirname, "..", "uploads")));
 app.listen(3333);
