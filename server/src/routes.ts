@@ -1,9 +1,19 @@
 import express from "express";
 
-const routes = express.Router();
+import PointsController from "./controllers/pointsController";
+import ItemsController from "./controllers/itemsController";
 
-routes.get("/", (request, response) => {
-  return response.json({ message: "Hello World" });
-});
+const routes = express.Router();
+const pointsController = new PointsController();
+const itemsController = new ItemsController();
+
+//index=exibir varios, show=exibir um, create=crirar novo registro,
+// update=atualizar registro, delete=deletar registro
+
+routes.get("/items", itemsController.index);
+
+routes.post("/points", pointsController.create);
+routes.get("/points", pointsController.index);
+routes.get("/points/:id", pointsController.show);
 
 export default routes;
