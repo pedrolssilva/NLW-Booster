@@ -27,6 +27,16 @@ interface IBGECityResponse {
   nome: string;
 }
 
+interface OpenCageResponse {
+  results: {
+    components: {
+      city: string;
+      town: string;
+      state_code: string;
+    };
+  }[];
+}
+
 const CreatePoint = () => {
   const [items, setItems] = useState<item[]>([]);
   const [ufs, setUfs] = useState<string[]>([]);
@@ -92,6 +102,38 @@ const CreatePoint = () => {
         setCities(cityNames);
       });
   }, [selectedUf]);
+
+  useEffect(() => {
+    const [latitude, longitude] = selectedPosition;
+    if (latitude === 0 || longitude === 0) {
+      return;
+    }
+
+    let apikey = "80eb8f3a72af4300abb9a166546aee63";
+    let api_url = "https://api.opencagedata.com/geocode/v1/json";
+    var request_url =
+      api_url +
+      "?" +
+      "key=" +
+      apikey +
+      "&q=" +
+      encodeURIComponent(latitude + "," + longitude) +
+      "&pretty=1" +
+      "roadinfo=1" +
+      "&no_annotations=1";
+
+    axios.get<OpenCageResponse>(request_url).then((response) => {
+      console.log(response.data.results[0].components);
+      const { state_code, city, town } = response.data.results[0].components;
+      if (state_code) {
+        setSelectedUf(state_code);
+      }
+
+      if (city || town) {
+        setSelectedCity(city ? city : town);
+      }
+    });
+  }, [selectedPosition]);
 
   function handleSelectedUf(event: ChangeEvent<HTMLSelectElement>) {
     const uf = event.target.value;
