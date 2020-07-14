@@ -109,7 +109,7 @@ const CreatePoint = () => {
       return;
     }
 
-    let apikey = "80eb8f3a72af4300abb9a166546aee63";
+    let apikey = process.env.REACT_APP_GEOCODE_API_KEY;
     let api_url = "https://api.opencagedata.com/geocode/v1/json";
     var request_url =
       api_url +
@@ -123,7 +123,6 @@ const CreatePoint = () => {
       "&no_annotations=1";
 
     axios.get<OpenCageResponse>(request_url).then((response) => {
-      console.log(response.data.results[0].components);
       const { state_code, city, town } = response.data.results[0].components;
       if (state_code) {
         setSelectedUf(state_code);
